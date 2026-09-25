@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "nodenext",
     "target": "ES2022",
     "lib": ["ES2022"],
     "outDir": "out",
@@ -11,7 +11,7 @@
     "skipLibCheck": true,
     "moduleResolution": "node16",
     "types": ["node", "vscode"],
-    "ignoreDeprecations": "6.0"
+    // "ignoreDeprecations": "6.0"
   },
   "include": ["src/**/*.ts"]
 }

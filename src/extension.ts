@@ -75,8 +75,7 @@ class Provider implements vscode.TreeDataProvider<any> {
       return;
     }
 
-    const exclude = vscode.workspace.getConfiguration('copyAsMarkdown').get('exclude')
-      || '**/{node_modules,.git,.svn,.hg,dist,build,out}/**';
+    const exclude = vscode.workspace.getConfiguration('copyAsMarkdown').get<string>('exclude', '**/{node_modules,.git,.svn,.hg,dist,build,out}/**');
 
     const uris = await vscode.workspace.findFiles('**/*', exclude);
     const result: any[] = [];
@@ -150,6 +149,26 @@ class Provider implements vscode.TreeDataProvider<any> {
     this._onDidChangeTreeData.fire(undefined);
   }
 
+  toggleChecked(item: any): void {
+    if (item instanceof ControlNode) {
+      if (this.selected.size === this.files.length) {
+        this.clearSelection();
+      } else {
+        this.selectAll();
+      }
+      return;
+    }
+
+    if (!item || !item.file) return;
+
+    const key = item.file.uri.toString();
+    if (this.selected.has(key)) this.selected.delete(key);
+    else this.selected.add(key);
+
+    this.updateSelectAll();
+    this._onDidChangeTreeData.fire(undefined);
+  }
+
   selectAll(): void {
     for (const file of this.files) this.selected.add(file.uri.toString());
     this.updateSelectAll();
@@ -172,7 +191,7 @@ class Provider implements vscode.TreeDataProvider<any> {
     } else if (this.selected.size === this.files.length) {
       this.selectAllNode.checkboxState = vscode.TreeItemCheckboxState.Checked;
     } else {
-      this.selectAllNode.checkboxState = vscode.TreeItemCheckboxState.Indeterminate;
+      this.selectAllNode.checkboxState = vscode.TreeItemCheckboxState.Unchecked;
     }
   }
 
@@ -272,7 +291,10 @@ export function activate(context: vscode.ExtensionContext): void {
   context.subscriptions.push(tree);
   context.subscriptions.push(
     tree.onDidChangeCheckboxState((event) => {
-      for (const [item, state] of event.items) provider.setChecked(item, state);
+      for (const entry of event.items) {
+        const item = (Array.isArray(entry) ? entry[0] : entry) as any;
+        provider.toggleChecked(item);
+      }
     }),
     vscode.commands.registerCommand('copyAsMarkdown.copySelected', () => copySelected(provider)),
     vscode.commands.registerCommand('copyAsMarkdown.refresh', () => provider.refresh()),

@@ -1,9 +1,9 @@
 {
-  "name": "copy-as-markdown",
-  "displayName": "Copy as Markdown",
+  "name": "copy-as-md-files",
+  "displayName": "Copy as md files",
   "description": "Browse project files in a VS Code-like tree, select files with checkboxes, and copy them as Markdown.",
   "version": "0.1.0",
-  "publisher": "local",
+  "publisher": "cabbage-council",
   "license": "MIT",
   "engines": {
     "vscode": "^1.100.0"
@@ -16,13 +16,18 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "vscode:prepublish": "npm run compile",
-    "package": "npx @vscode/vsce package"
+    "package": "vsce package --out copy-as-md-files.vsix",
+    "publish": "vsce publish"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
     "@types/vscode": "^1.100.0",
     "@vscode/vsce": "^3.2.2",
     "typescript": "^5.7.2"
+  },
+  "repository": {
+    "url": "https://github.com/vutrn/copy-as-markdown",
+    "type": "git" 
   },
   "contributes": {
     "viewsContainers": {
