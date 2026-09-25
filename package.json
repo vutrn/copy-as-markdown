@@ -1,0 +1,114 @@
+{
+  "name": "copy-as-markdown",
+  "displayName": "Copy as Markdown",
+  "description": "Browse project files in a VS Code-like tree, select files with checkboxes, and copy them as Markdown.",
+  "version": "0.1.0",
+  "publisher": "local",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.100.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./out/extension.js",
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "vscode:prepublish": "npm run compile",
+    "package": "npx @vscode/vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/vscode": "^1.100.0",
+    "@vscode/vsce": "^3.2.2",
+    "typescript": "^5.7.2"
+  },
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "copyAsMarkdown",
+          "title": "Copy as Markdown",
+          "icon": "media/copy-markdown.svg"
+        }
+      ]
+    },
+    "views": {
+      "copyAsMarkdown": [
+        {
+          "id": "copyAsMarkdown.files",
+          "name": "Files",
+          "contextualTitle": "Copy as Markdown",
+          "icon": "media/copy-markdown.svg"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "copyAsMarkdown.copySelected",
+        "title": "Copy Selected as Markdown",
+        "icon": "$(copy)"
+      },
+      {
+        "command": "copyAsMarkdown.refresh",
+        "title": "Refresh Files",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "copyAsMarkdown.clearSelection",
+        "title": "Clear Selection",
+        "icon": "$(close)"
+      },
+      {
+        "command": "copyAsMarkdown.selectAll",
+        "title": "Select All Files",
+        "icon": "$(check-all)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "copyAsMarkdown.copySelected",
+          "when": "view == copyAsMarkdown.files",
+          "group": "navigation@1"
+        },
+        {
+          "command": "copyAsMarkdown.refresh",
+          "when": "view == copyAsMarkdown.files",
+          "group": "navigation@2"
+        },
+        {
+          "command": "copyAsMarkdown.clearSelection",
+          "when": "view == copyAsMarkdown.files",
+          "group": "navigation@3"
+        },
+        {
+          "command": "copyAsMarkdown.selectAll",
+          "when": "view == copyAsMarkdown.files",
+          "group": "navigation@4"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Copy as Markdown",
+      "properties": {
+        "copyAsMarkdown.includeFilePath": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include the workspace-relative file path as a Markdown heading."
+        },
+        "copyAsMarkdown.includeLanguage": {
+          "type": "boolean",
+          "default": true,
+          "description": "Add a language identifier to each Markdown code fence."
+        },
+        "copyAsMarkdown.exclude": {
+          "type": "string",
+          "default": "**/{node_modules,.git,.svn,.hg,dist,build,out}/**",
+          "description": "Glob pattern used to hide files from the tree."
+        }
+      }
+    }
+  }
+}
